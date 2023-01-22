@@ -1,38 +1,58 @@
-.App {
-  text-align: center;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.sign-container{
+    margin: auto;
+    align-items: center;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    color: #1d1c1d;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.sign-header{
+    margin-top: 1rem;
+    padding: 2rem;
+    font-size: 3rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.sign-text {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
 }
 
-.App-link {
-  color: #61dafb;
+.or{
+    border-top:1px solid #ddd;
+    
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.google-button:hover{
+    cursor: pointer;
+    box-shadow: 0.5px 0.5px  #4285f4;
+}
+
+
+
+.sign-submit{
+    width: 100%;
+    height: 3rem;
+    border-radius: 5px;
+    border: 2px solid;
+    color: #fff;
+    background-color: #4a154b;
+    font-weight: 700;
+    margin: 1rem 0rem;
+}
+
+.sign-submit:hover{
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.sign-error{
+    color: red;
+    padding-left: 1rem;
 }
