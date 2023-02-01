@@ -25,7 +25,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/TheStyku/slack-clone.git"
+    "url": "https://github.com/TheStyku/slack-clone.git"
   },
   "bugs": {
     "url": "https://github.com/TheStyku/slack-clone/issues"
