@@ -6,6 +6,7 @@ import { UserProvider } from "./context/user/UserContext";
 function App() {
   return (
     <>
+
     <UserProvider>
       <Router>
         <Routes>
