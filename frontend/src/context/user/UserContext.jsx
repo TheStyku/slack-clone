@@ -15,6 +15,7 @@ export const UserProvider = ({children}) =>{
         _id:user ? user._id :'',
         error: false,
         message: '',
+        room:'start',
     }
     const [state, dispatch] = useReducer(userReducer, initialState)
 

@@ -26,7 +26,8 @@ import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 import CodeIcon from '@mui/icons-material/Code';
 import CodeOffIcon from '@mui/icons-material/CodeOff';
-import { useState } from "react";
+import UserContext from "../context/user/UserContext";
+import { useState,useContext } from "react";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   "& .MuiToggleButtonGroup-grouped": {
@@ -48,6 +49,7 @@ function TextInput({ socket }) {
   const [alignment, setAlignment] = useState("left");
   const [formats, setFormats] = useState(() => ["italic"]);
   const [message, setMessage] = useState("");
+  const {room} = useContext(UserContext);
 
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
@@ -63,7 +65,7 @@ function TextInput({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message, room: 'start' });
+    socket.emit("send_message", { message: message, room: room });
     setMessage("");
   };
 

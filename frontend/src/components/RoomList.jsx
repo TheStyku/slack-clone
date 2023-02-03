@@ -17,14 +17,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
-import { useState } from "react";
+import UserContext from "../context/user/UserContext";
+import { useState,useContext } from "react";
 
 function RoomList({socket}) {
   const [open, setOpen] = useState(true);
   const [open1, setOpen1] = useState(true);
   const [open2, setOpen2] = useState(false);
   const [room, setRoom] = useState('')
+  const {dispatch} = useContext(UserContext);
 
   const handleChange =(e) =>{
     setRoom(e.target.value)
@@ -47,6 +48,7 @@ function RoomList({socket}) {
 
   const handleSubmit = () => {
     socket.emit('join_room',room)
+    dispatch({type: 'SET_ROOM', payload: {room}})
     console.log({room})
     setOpen2(false);
   };

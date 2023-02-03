@@ -58,6 +58,12 @@ const userReducer = (state, { type, payload }) =>{
                     loading: false
                 }
             }
+            case 'SET_ROOM' :{
+                return{
+                    ...state,
+                    room: payload.room,
+                }
+            }
         default:
         return state
     }
