@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config();
 const { errorHandler } = require('./middleware/errorMiddleware');
 const app = express();
 const connectDB = require('./config/db');
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 const server = require('http').Server(app);
 const cors = require('cors');
 const io = require('socket.io')(server, {
@@ -22,10 +22,14 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
       console.log('🔥: A user disconnected');
     });
-
-    socket.on("send_message", (data) =>{
-      io.emit('recive_messege', data)
-      console.log(data)
+    socket.on('join_room', room=>{
+      socket.join(room);
+      console.log(room)
+    })
+    socket.on("send_message", ({room, message}) =>{
+      io.in(room).emit('recive_messege', message);
+      //io.emit('recive_messege', data)
+      console.log(message,room)
     })
 });
 

@@ -2,21 +2,14 @@ import { useState, useEffect, useContext } from "react";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import SendIcon from "@mui/icons-material/Send";
 import ListItemText from "@mui/material/ListItemText";
-import ImageIcon from "@mui/icons-material/Image";
 import UserContext from "../context/user/UserContext";
 
 function Message({ socket }) {
@@ -38,12 +31,16 @@ function Message({ socket }) {
       user: "Nie",
     },
   ]);
-  const [curent, setCurent] = useState("");
   const { name } = useContext(UserContext);
+  const handleClick =(e) =>{
+    socket.emit('join_room','start')
+  }
   useEffect(() => {
+    
     socket.on("recive_messege", (data) => {
-      setMessage([...message, { id: 1, text: "" + data.message }]);
+      setMessage([...message, { id: 1, text: data }]);
       console.log("i fire once");
+      console.log(message)
     });
   }, [socket, message]);
 
@@ -64,7 +61,7 @@ function Message({ socket }) {
                 title={
                   <Container fixed>
                     <Paper />
-                    <Button>Add</Button>
+                    <Button onClick={handleClick}>Add</Button>
                   </Container>
                 }
               >

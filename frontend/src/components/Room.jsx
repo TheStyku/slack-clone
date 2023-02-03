@@ -2,7 +2,6 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@mui/material/IconButton";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -22,7 +21,7 @@ import {
   usePopupState,
 } from "material-ui-popup-state/hooks";
 
-function Room() {
+function Room({socket}) {
   const { name } = useContext(UserContext);
   const [checked, setChecked] = useState(false);
 
@@ -143,7 +142,7 @@ function Room() {
                 marginTop: "0.5rem",
               }}
             >
-              <RoomList theme={theme} />
+              <RoomList theme={theme} socket={socket} />
             </Box>
             <Box
               sx={{

@@ -20,10 +20,15 @@ import TextField from '@mui/material/TextField';
 
 import { useState } from "react";
 
-function RoomList() {
+function RoomList({socket}) {
   const [open, setOpen] = useState(true);
   const [open1, setOpen1] = useState(true);
   const [open2, setOpen2] = useState(false);
+  const [room, setRoom] = useState('')
+
+  const handleChange =(e) =>{
+    setRoom(e.target.value)
+  }
 
   const handleClick = () => {
     setOpen(!open);
@@ -37,6 +42,12 @@ function RoomList() {
   };
 
   const handleClose = () => {
+    setOpen2(false);
+  };
+
+  const handleSubmit = () => {
+    socket.emit('join_room',room)
+    console.log({room})
     setOpen2(false);
   };
 
@@ -147,22 +158,38 @@ function RoomList() {
       <Dialog open={open2} onClose={handleClose} maxWidth='xs' fullWidth={true}>
         <DialogTitle>Create a channel</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-          Channels are where your team communicates. They’re best when organized around a topic — #marketing, for example.
+          <DialogContentText gutterBottom>
+          Channels are where your team communicates. 
+          They’re best when organized around a topic — #marketing, for example.
+          </DialogContentText >
+          <DialogContentText  variant="subtitle1">
+            Name
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="room"
+            value={room}
+            onChange={handleChange}
+           
+            fullWidth
+            variant="outlined"
+          />
+           <DialogContentText variant="subtitle1" >
+           Description 
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Email Address"
-            type="email"
+            
+            
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleSubmit} variant="contained" color='success'>Create</Button>
         </DialogActions>
       </Dialog>
     </ThemeProvider>

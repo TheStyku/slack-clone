@@ -28,7 +28,7 @@ function User() {
           <Navbar />
           <Grid  container>
             <Grid item xs={2}>
-              <Room />
+              <Room socket={socket}/>
             </Grid>
             <Grid item xs={10}>
               <Chat socket={socket} />

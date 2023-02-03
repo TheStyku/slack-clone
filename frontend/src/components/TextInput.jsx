@@ -21,9 +21,6 @@ import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import SendIcon from "@mui/icons-material/Send";
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
-import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
-import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
-import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
@@ -66,7 +63,7 @@ function TextInput({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message });
+    socket.emit("send_message", { message: message, room: 'start' });
     setMessage("");
   };
 
