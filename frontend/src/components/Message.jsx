@@ -11,36 +11,71 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import ListItemText from "@mui/material/ListItemText";
 import UserContext from "../context/user/UserContext";
+import axios from "axios";
 
 function Message({ socket }) {
   const [message, setMessage] = useState([
-    { id: 1, text: "hello", user: "tak" },
+    { id: 1, text: "hello", user: {
+      name:"tak"
+    } },
     {
       id: 2,
       text: "world",
-      user: "tak",
+      user: {
+        name:"tak"
+      } 
     },
     {
       id: 3,
       text: "to",
-      user: "Nie",
+      user: {
+        name:"NIE"
+      } 
     },
     {
       id: 4,
       text: "me",
-      user: "Nie",
+      user: {
+        name:"NIE"
+      } 
     },
   ]);
-  const { name } = useContext(UserContext);
-  const handleClick =(e) =>{
-    socket.emit('join_room','start')
-  }
+  const [tak,setTak] = useState([])
+  const { name, token, room } = useContext(UserContext);
+  const handleClick = (e) => {
+    socket.emit("join_room", "start");
+  };
+
+  const API_URL = "http://localhost:4000/api/message/";
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    params: {
+      room: room
+    }
+  };
+
+  const handleClick1 = async (e) => {
+    await axios
+      .get(
+        API_URL,         
+        config
+      )
+      .then((response) => {
+        console.log(response.data);
+        setMessage(response.data)
+        setTak(response.data);
+        console.log(tak)
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  };
+
   useEffect(() => {
-    
     socket.on("recive_messege", (data) => {
-      setMessage([...message, { id: 1, text: data }]);
+      setMessage([...message, { id: 1, text: data.message, user: data.name }]);
       console.log("i fire once");
-      console.log(message)
+      console.log(message);
     });
   }, [socket, message]);
 
@@ -48,7 +83,8 @@ function Message({ socket }) {
     <Box>
       <List sx={{ maxHeight: 350, overflow: "auto", minHeight: "22rem" }}>
         {message.map((messag, index) =>
-          (index >0 && message[index].user !== message[index-1].user) || index===0  ? (
+          (index > 0 && message[index].user.name !== message[index - 1].user.name) ||
+          index === 0 ? (
             <ListItem
               key={index}
               sx={{
@@ -62,6 +98,7 @@ function Message({ socket }) {
                   <Container fixed>
                     <Paper />
                     <Button onClick={handleClick}>Add</Button>
+                    <Button onClick={handleClick1}>get</Button>
                   </Container>
                 }
               >
@@ -79,7 +116,7 @@ function Message({ socket }) {
                       component="h1"
                       variant="h6"
                     >
-                      {name}
+                      {messag.user.name}
                     </Typography>
                     <Tooltip placement="top" title="5:43 PM">
                       <Typography

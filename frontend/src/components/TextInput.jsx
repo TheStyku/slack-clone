@@ -24,10 +24,11 @@ import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
-import CodeIcon from '@mui/icons-material/Code';
-import CodeOffIcon from '@mui/icons-material/CodeOff';
+import CodeIcon from "@mui/icons-material/Code";
+import CodeOffIcon from "@mui/icons-material/CodeOff";
 import UserContext from "../context/user/UserContext";
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
+import axios from "axios";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   "& .MuiToggleButtonGroup-grouped": {
@@ -49,7 +50,12 @@ function TextInput({ socket }) {
   const [alignment, setAlignment] = useState("left");
   const [formats, setFormats] = useState(() => ["italic"]);
   const [message, setMessage] = useState("");
-  const {room} = useContext(UserContext);
+  const { room, token, _id, name } = useContext(UserContext);
+
+  const API_URL = "http://localhost:4000/api/message/";
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
 
   const handleFormat = (event, newFormats) => {
     setFormats(newFormats);
@@ -63,9 +69,29 @@ function TextInput({ socket }) {
     setMessage(e.target.value);
   };
 
+  const sendMessage = async (e) => {
+    await axios
+      .post(
+        API_URL,
+        {
+          room: room,
+          text: message,
+          ID: _id,
+        },
+        config
+      )
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message, room: room });
+    socket.emit("send_message", { message: message, room: room, name: name });
+    sendMessage();
     setMessage("");
   };
 
@@ -76,7 +102,6 @@ function TextInput({ socket }) {
         sx={{
           border: (theme) => `1px solid ${theme.palette.divider}`,
           margin: "1rem  1rem 0rem 1rem",
-          
         }}
       >
         <Grid
@@ -92,26 +117,26 @@ function TextInput({ socket }) {
               onChange={handleFormat}
               aria-label="text formatting"
             >
-              <ToggleButton value="bold"  aria-label="bold">
+              <ToggleButton value="bold" aria-label="bold">
                 <FormatBoldIcon fontSize="small" />
               </ToggleButton>
               <ToggleButton value="italic" aria-label="italic">
                 <FormatItalicIcon fontSize="small" />
               </ToggleButton>
               <ToggleButton value="underlined" aria-label="underlined">
-                <StrikethroughSIcon fontSize="small"/>
+                <StrikethroughSIcon fontSize="small" />
               </ToggleButton>
             </StyledToggleButtonGroup>
             <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
             <IconButton aria-label="link">
-              <LinkIcon  fontSize="small"/>
+              <LinkIcon fontSize="small" />
             </IconButton>
             <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
             <IconButton aria-label="format-number">
               <FormatListNumberedIcon fontSize="small" />
             </IconButton>
             <IconButton aria-label="format-bullet">
-              <FormatListBulletedIcon fontSize="small"/>
+              <FormatListBulletedIcon fontSize="small" />
             </IconButton>
             <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
             <StyledToggleButtonGroup
@@ -122,7 +147,7 @@ function TextInput({ socket }) {
               aria-label="text alignment"
             >
               <ToggleButton value="left" aria-label="left aligned">
-                <FormatAlignLeftIcon fontSize="small"/>
+                <FormatAlignLeftIcon fontSize="small" />
               </ToggleButton>
             </StyledToggleButtonGroup>
             <Divider flexItem orientation="vertical" sx={{ mx: 0.5, my: 1 }} />
@@ -140,7 +165,6 @@ function TextInput({ socket }) {
                 <CodeOffIcon fontSize="small" />
               </ToggleButton>
             </StyledToggleButtonGroup>
-            
           </Grid>
           <Grid item>
             <InputBase
@@ -165,13 +189,13 @@ function TextInput({ socket }) {
           >
             <Grid item sx={{ display: "flex" }}>
               <IconButton value="left" aria-label="left aligned">
-                <AddCircleIcon fontSize="small"/>
+                <AddCircleIcon fontSize="small" />
               </IconButton>
               <IconButton value="center" aria-label="centered">
-                <VideoCallIcon fontSize="small"/>
+                <VideoCallIcon fontSize="small" />
               </IconButton>
               <IconButton value="right" aria-label="right aligned">
-                <MicIcon fontSize="small"/>
+                <MicIcon fontSize="small" />
               </IconButton>
               <Divider
                 flexItem
@@ -182,19 +206,23 @@ function TextInput({ socket }) {
                 <SentimentSatisfiedAltIcon fontSize="small" />
               </IconButton>
               <IconButton value="italic" aria-label="italic">
-                <AlternateEmailIcon fontSize="small"/>
+                <AlternateEmailIcon fontSize="small" />
               </IconButton>
               <IconButton value="underlined" aria-label="underlined">
-                <FormatSizeIcon fontSize="small"/>
+                <FormatSizeIcon fontSize="small" />
               </IconButton>
             </Grid>
             <Grid item>
-              <ButtonGroup variant="contained" color="success" sx={{marginBottom: '0.5rem'}} >
+              <ButtonGroup
+                variant="contained"
+                color="success"
+                sx={{ marginBottom: "0.5rem" }}
+              >
                 <IconButton onClick={handleSubmit}>
-                  <SendIcon fontSize="small"/>
+                  <SendIcon fontSize="small" />
                 </IconButton>
                 <IconButton value="underlined" aria-label="underlined">
-                  <ArrowDropDown fontSize="small"/>
+                  <ArrowDropDown fontSize="small" />
                 </IconButton>
               </ButtonGroup>
             </Grid>

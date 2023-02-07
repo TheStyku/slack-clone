@@ -26,15 +26,15 @@ io.on('connection', socket => {
       socket.join(room);
       console.log(room)
     })
-    socket.on("send_message", ({room, message}) =>{
-      io.in(room).emit('recive_messege', message);
+    socket.on("send_message", ({room, message, name }) =>{
+      io.in(room).emit('recive_messege', message, room, name);
       //io.emit('recive_messege', data)
-      console.log(message,room)
+      console.log(message,room, name)
     })
 });
 
 app.use('/api/users', require('./routes/userRoutes'));
-
+app.use('/api/message', require('./routes/messageRoutes'));
 
 app.get('/api', (req, res) => {
   res.json({
