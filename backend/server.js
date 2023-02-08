@@ -27,9 +27,9 @@ io.on('connection', socket => {
       console.log(room)
     })
     socket.on("send_message", ({room, message, name }) =>{
-      io.in(room).emit('recive_messege', message, room, name);
+      io.in(room).emit('recive_messege', {rooom: room, message: message, name: name} );
       //io.emit('recive_messege', data)
-      console.log(message,room, name)
+      console.log(message,room,)
     })
 });
 

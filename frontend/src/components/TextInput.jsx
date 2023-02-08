@@ -90,7 +90,7 @@ function TextInput({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message, room: room, name: name });
+    socket.emit("send_message", { message: message, room: room, name: name});
     sendMessage();
     setMessage("");
   };

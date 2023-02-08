@@ -73,9 +73,9 @@ function Message({ socket }) {
 
   useEffect(() => {
     socket.on("recive_messege", (data) => {
-      setMessage([...message, { id: 1, text: data.message, user: data.name }]);
+      setMessage([...message, { id: 1, text: data.message, user: {name: data.name} }]);
       console.log("i fire once");
-      console.log(message);
+      console.log(data);
     });
   }, [socket, message]);
 
