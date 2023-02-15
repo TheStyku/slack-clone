@@ -11,10 +11,10 @@ import UserContext from "../context/user/UserContext";
 
 function Toast() {
  
-  const { error, dispatch,message } = useContext(UserContext)
+  const { error, dispatch,errorMessage } = useContext(UserContext)
   return (
       <Snackbar severity="error" open={error} 
-      TransitionComponent='SlideTransition'  
+      
       anchorOrigin= {{vertical:'top', horizontal :'center'}}>
       <Alert
         severity="error"
@@ -32,7 +32,7 @@ function Toast() {
           }
           sx={{ mb: 2 }}
         >
-          {message}
+          {errorMessage}
         </Alert>
       </Snackbar>
   )

@@ -33,7 +33,7 @@ function Login() {
         })
         .catch((err) => {
           console.log(err.response.data.message);
-          dispatch({ type: "ERROR", payload: err.response.data });
+          dispatch({ type: "ERROR", payload: err.response.data.message });
         });
       resetForm();
     },

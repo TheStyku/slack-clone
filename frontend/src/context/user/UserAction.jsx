@@ -41,6 +41,7 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
+
 const UserAction = {
   register,
   logout,

@@ -19,13 +19,39 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import UserContext from "../context/user/UserContext";
 import { useState,useContext } from "react";
+import axios from "axios";
 
 function RoomList({socket}) {
   const [open, setOpen] = useState(true);
   const [open1, setOpen1] = useState(true);
   const [open2, setOpen2] = useState(false);
   const [room, setRoom] = useState('')
-  const {dispatch} = useContext(UserContext);
+  const {dispatch,token} = useContext(UserContext);
+
+  const API_URL = "http://localhost:4000/api/message/";
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    params: {
+      room: room
+    }
+  };
+  const getMessage = async (e) => {
+    await axios
+      .get(
+        API_URL,         
+        config
+      )
+      .then((response) => {
+        console.log(response.data);
+        dispatch({type:'CLEAR_MESSAGE'})
+        response.data.forEach(item=> 
+          dispatch({type:'ADD_MESSAGE', payload:{ id: item._id, text: item.text, name: item.user.name}})
+          )
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  };
 
   const handleChange =(e) =>{
     setRoom(e.target.value)
@@ -47,10 +73,10 @@ function RoomList({socket}) {
   };
 
   const handleSubmit = () => {
-    socket.emit('join_room',room)
     dispatch({type: 'SET_ROOM', payload: {room}})
     console.log({room})
     setOpen2(false);
+    getMessage();
   };
 
   const theme = createTheme({

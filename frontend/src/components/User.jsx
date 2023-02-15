@@ -10,16 +10,17 @@ import UserContext from "../context/user/UserContext";
 const socket = socketIO.connect("http://localhost:4000");
 
 function User() {
-  const { _id, } = useContext(UserContext);
+  const { _id, room} = useContext(UserContext);
   const navigate = useNavigate();
   const [log, setLog] = useState(false);
   useEffect(() => {
+    socket.emit('join_room',room)
     if (_id === "") {
       navigate("/");
     } else {
       setLog(true);
     }
-  }, [navigate, _id]);
+  }, [navigate, _id,room]);
 
   return (
     <>

@@ -13,35 +13,11 @@ import ListItemText from "@mui/material/ListItemText";
 import UserContext from "../context/user/UserContext";
 import axios from "axios";
 
+
+
 function Message({ socket }) {
-  const [message, setMessage] = useState([
-    { id: 1, text: "hello", user: {
-      name:"tak"
-    } },
-    {
-      id: 2,
-      text: "world",
-      user: {
-        name:"tak"
-      } 
-    },
-    {
-      id: 3,
-      text: "to",
-      user: {
-        name:"NIE"
-      } 
-    },
-    {
-      id: 4,
-      text: "me",
-      user: {
-        name:"NIE"
-      } 
-    },
-  ]);
   const [tak,setTak] = useState([])
-  const { name, token, room } = useContext(UserContext);
+  const { message, token, room, dispatch } = useContext(UserContext);
   const handleClick = (e) => {
     socket.emit("join_room", "start");
   };
@@ -62,22 +38,23 @@ function Message({ socket }) {
       )
       .then((response) => {
         console.log(response.data);
-        setMessage(response.data)
-        setTak(response.data);
-        console.log(tak)
+        dispatch({type:'CLEAR_MESSAGE'})
+        response.data.forEach(item=> 
+          dispatch({type:'ADD_MESSAGE', payload:{ id: 1, text: item.text, name: item.user.name}})
+          )
       })
       .catch((err) => {
         console.log(err.response.data.message);
       });
   };
 
-  useEffect(() => {
-    socket.on("recive_messege", (data) => {
-      setMessage([...message, { id: 1, text: data.message, user: {name: data.name} }]);
+  useEffect(() => {  
+    socket.off('recive_messege').on("recive_messege", (data) => {
+      dispatch({type:'ADD_MESSAGE', payload:{ id: 1, text: data.message, name: data.name}})
       console.log("i fire once");
       console.log(data);
     });
-  }, [socket, message]);
+  }, [socket,dispatch]);
 
   return (
     <Box>

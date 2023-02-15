@@ -10,6 +10,10 @@ import TextInput from "./TextInput";
 import Message from "./Message";
 import Avatar from "@mui/material/Avatar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../context/user/UserContext";
+import axios from "axios";
+
 
 function Chat({ socket }) {
   const theme = createTheme({
@@ -30,8 +34,39 @@ function Chat({ socket }) {
       },
     },
   });
+  const { message, token, room, dispatch } = useContext(UserContext);
+
+  const API_URL = "http://localhost:4000/api/message/";
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    params: {
+      room: room
+    }
+  };
+
+  const handleClick1 = async (e) => {
+    await axios
+      .get(
+        API_URL,         
+        config
+      )
+      .then((response) => {
+        console.log(response.data);
+        dispatch({type:'CLEAR_MESSAGE'})
+        response.data.forEach(item=> 
+          dispatch({type:'ADD_MESSAGE', payload:{ id: 1, text: item.text, name: item.user.name}})
+          )
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  };
 
   const handleClick = () => {};
+
+  useEffect(() => {  
+    handleClick1()
+  },[] );
 
   return (
     <>
