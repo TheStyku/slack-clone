@@ -10,7 +10,7 @@
     "serv": "nodemon backend/server.js",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "render": "concurrently \"npm run serv\" \"npm run client\""
+    "render":  "npm run serv & npm run client"
   },
   "keywords": [],
   "author": "TheStyku",
