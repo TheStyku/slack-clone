@@ -1,11 +1,6 @@
-import { useFormik } from "formik";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useContext, useState } from "react";
 import UserContext from "../context/user/UserContext";
-import UserAction from "../context/user/UserAction";
-import Toast from "./Toast";
-import axios from "axios";
-import * as Yup from "yup";
 import { Button, Box, Typography } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
@@ -78,33 +73,3 @@ function Home() {
 }
 export default Home;
 
-/* <Form className="sign-form">
-              <label htmlFor="email">Email</label>
-              <Field name="email" type="text" placeholder="Email" />
-              <ErrorMessage
-                className="sign-error"
-                component="div"
-                name="email"
-              />
-
-              <label htmlFor="password">Password</label>
-              <Field name="password" type="password" />
-              <ErrorMessage
-                className="sign-error"
-                component="div"
-                name="password"
-              />
-
-              <label htmlFor="password2">Confirm password</label>
-              <Field name="password2" type="password2" />
-              <ErrorMessage
-                className="sign-error"
-                component="div"
-                name="password2"
-              />
-
-              <button className="sign-submit" type="submit">
-                Create a Account
-              </button>
-            </Form>
-            */

@@ -2,7 +2,6 @@ import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Container from "@mui/material/Container";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
@@ -13,9 +12,6 @@ import Logout from "@mui/icons-material/Logout";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { TextField, Paper, InputBase } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import HistoryIcon from "@mui/icons-material/History";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
@@ -56,9 +52,9 @@ function Navbar() {
     },
     typography: {
       button: {
-        textTransform: "none"
-      }
-    }
+        textTransform: "none",
+      },
+    },
   });
   return (
     <ThemeProvider theme={theme}>
@@ -86,9 +82,8 @@ function Navbar() {
                 lineHeight: " 2.4",
                 color: "#ffffff",
                 justifyContent: "flex-start",
-                paddingY: '0px',
+                paddingY: "0px",
                 marginTop: "5px",
-                
               }}
               color="button"
               variant="contained"
@@ -112,7 +107,6 @@ function Navbar() {
                 aria-controls={open ? "account-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
-                
               >
                 <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
               </IconButton>
@@ -186,32 +180,3 @@ function Navbar() {
   );
 }
 export default Navbar;
-
-/*
-<Paper
-            component="form"
-            sx={{
-              m: "4px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: "1rem",
-              backgroundColor: "#82488c",
-            }}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Search Google Maps"
-              inputProps={{ "aria-label": "search google maps" }}
-            />
-
-            <IconButton sx={{ p: "10px" }} aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-
-*/

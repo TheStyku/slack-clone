@@ -8,7 +8,7 @@ import { Button, Box, TextField } from "@mui/material";
 
 function Login() {
   const { dispatch } = useContext(UserContext);
-  const API_URL = "http://localhost:4000/api/users/";
+  const API_URL = "/api/users/";
 
   const formik = useFormik({
     initialValues: {
@@ -23,7 +23,6 @@ function Login() {
     }),
     onSubmit: async (values, { resetForm }) => {
       dispatch({ type: "API_CALL" });
-      //const user = await UserAction.register(values).catch(dispatch({type: 'ERROR'}))
       await axios
         .post(API_URL + "login", values)
         .then((response) => {
@@ -33,7 +32,7 @@ function Login() {
         })
         .catch((err) => {
           console.log(err.response.data.message);
-          dispatch({ type: "ERROR", payload: err.response.data.message });
+          dispatch({ type: "ERROR", payload: err.response.data });
         });
       resetForm();
     },

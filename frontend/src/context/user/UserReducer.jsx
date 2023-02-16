@@ -27,7 +27,7 @@ const userReducer = (state, { type, payload }) => {
     case "ERROR": {
       return {
         ...state,
-        errorMessage: payload.value,
+        errorMessage: payload.message,
         loading: false,
         error: true,
       };
@@ -35,7 +35,7 @@ const userReducer = (state, { type, payload }) => {
     case "C_ERROR": {
       return {
         ...state,
-        errorMessage: payload.errorMessage,
+        errorMessage: payload.message,
         error: false,
       };
     }
@@ -95,11 +95,7 @@ const userReducer = (state, { type, payload }) => {
       case 'CLEAR_MESSAGE':
         return {
             ...state,
-            message:[{
-              id: '1',
-            text: 'start',
-            user: { name:'Start' },
-            }]
+            message:[]
         }
 
     default:
