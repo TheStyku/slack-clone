@@ -66,8 +66,6 @@ function Room({socket}) {
             <Divider style={{ background: "grey" }} />
             <ButtonGroup variant="text" >
               <Button
-                id="demo-positioned-button"
-                aria-labelledby="demo-positioned-button"
                 {...bindTrigger(popupState1)}
                 fullWidth
                 color="neutral"
@@ -76,7 +74,7 @@ function Room({socket}) {
                 {name}
                 <ArrowDropDownIcon />
               </Button>
-              <Button sx={{ p: "10px" }} aria-label="history" color="neutral">
+              <Button sx={{ p: "10px" }} color="neutral">
                 <EditRoundedIcon fontSize="small" />
               </Button>
             </ButtonGroup>

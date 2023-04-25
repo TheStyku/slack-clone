@@ -1,35 +1,37 @@
-import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  Button,
+  Grid,
+  Tooltip,
+  IconButton,
+  Divider,
+  ListItemIcon,
+  MenuItem,
+  Menu,
+  Avatar,
+  Box,
+  tooltipClasses,
+  Typography,
+} from "@mui/material";
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import HistoryIcon from "@mui/icons-material/History";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import {
+  usePopupState,
+  bindTrigger,
+  bindMenu,
+} from "material-ui-popup-state/hooks";
 
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import UserContext from "../context/user/UserContext";
 import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { name, dispatch } = useContext(UserContext);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+
   const navigate = useNavigate();
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleLogout = () => {
     navigate("/");
@@ -37,6 +39,19 @@ function Navbar() {
     localStorage.removeItem("user");
     dispatch({ type: "LOGOUT" });
   };
+  const DarkTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: theme.palette.common.black,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.black,
+      fontSize: theme.typography.pxToRem(14),
+    },
+  }));
+
+  const popupState = usePopupState({ variant: "popover", popupId: "demoMenu" });
 
   const theme = createTheme({
     palette: {
@@ -70,111 +85,101 @@ function Navbar() {
               height: 32,
             }}
           >
-            <IconButton sx={{ p: "20px" }} aria-label="history" color="grey">
-              <HistoryIcon />
-            </IconButton>
+            <DarkTooltip title="History">
+              <IconButton
+                sx={{
+                  width: "2rem",
+                  height: "2rem",
+                  marginTop: "5px",
+                  borderRadius: "0px",
+                  paddingRight: "1rem",
+                }}
+                color="grey"
+              >
+                <HistoryIcon />
+              </IconButton>
+            </DarkTooltip>
           </Grid>
           <Grid item xs={7}>
-            <Button
-              fullWidth
-              size="small"
-              sx={{
-                lineHeight: " 2.4",
-                color: "#ffffff",
-                justifyContent: "flex-start",
-                paddingY: "0px",
-                marginTop: "5px",
-              }}
-              color="button"
-              variant="contained"
-            >
-              Search {name}
-            </Button>
+            <DarkTooltip title={<Typography>Search {name}</Typography>}>
+              <Button
+                fullWidth
+                size="small"
+                sx={{
+                  lineHeight: " 2.4",
+                  color: "#ffffff",
+                  justifyContent: "flex-start",
+                  paddingY: "0px",
+                  marginTop: "5px",
+                }}
+                color="button"
+                variant="contained"
+              >
+                Search {name}
+              </Button>
+            </DarkTooltip>
           </Grid>
           <Grid
             item
             xs={3}
             sx={{ display: "flex", justifyContent: "flex-end" }}
           >
-            <IconButton aria-label="help" size="small" color="grey">
-              <HelpOutlineIcon />
-            </IconButton>
-            <Tooltip title="Account settings">
+            <DarkTooltip title="Help">
               <IconButton
-                onClick={handleClick}
+                size="small"
+                color="grey"
+                sx={{
+                  width: "2rem",
+                  height: "2rem",
+                  marginTop: "5px",
+                  borderRadius: "0px",
+                }}
+              >
+                <HelpOutlineIcon />
+              </IconButton>
+            </DarkTooltip>
+            <>
+              <IconButton
                 size="small"
                 sx={{ mr: 2 }}
-                aria-controls={open ? "account-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
+                {...bindTrigger(popupState)}
               >
                 <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
               </IconButton>
-            </Tooltip>
+              <Menu
+                {...bindMenu(popupState)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+              >
+                <MenuItem>
+                  <Avatar /> {name}
+                </MenuItem>
+                <MenuItem>
+                  <Avatar /> My account
+                </MenuItem>
+                <Divider />
+                <MenuItem>
+                  <ListItemIcon>
+                    <PersonAdd fontSize="small" />
+                  </ListItemIcon>
+                  Add another account
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <Settings fontSize="small" />
+                  </ListItemIcon>
+                  Settings
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
+            </>
           </Grid>
         </Grid>
-
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-              mt: 1.5,
-              "& .MuiAvatar-root": {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              "&:before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        >
-          <MenuItem>
-            <Avatar /> {name}
-          </MenuItem>
-          <MenuItem>
-            <Avatar /> My account
-          </MenuItem>
-          <Divider />
-          <MenuItem>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            Add another account
-          </MenuItem>
-          <MenuItem>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
-          <MenuItem onClick={handleLogout}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
       </Box>
     </ThemeProvider>
   );

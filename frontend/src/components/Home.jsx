@@ -8,8 +8,8 @@ import SignIn from "./SignIn";
 import Login from "./Login";
 
 function Home() {
-  const [log, setLog]= useState(false)
-  const { user, _id,  } = useContext(UserContext);
+  const [log, setLog] = useState(false);
+  const { user, _id } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,23 +22,22 @@ function Home() {
     }
   }, [user, navigate, _id]);
 
-  const handleClick= () =>{
-    setLog(!log)
-  }
+  const handleClick = () => {
+    setLog(!log);
+  };
 
   return (
     <>
-    <Box mt={2} mr={2}  sx={{display: 'flex', justifyContent: 'flex-end'}}>
-          <Button
+      <Box mt={2} mr={2} sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
           onClick={handleClick}
-          sx={{padingRight: '2rem'}}
-          variant="text">
-            
-              Log in
-          </Button>
-          </Box>
+          sx={{ padingRight: "2rem" }}
+          variant="text"
+        >
+          Log in
+        </Button>
+      </Box>
       <div className="sign-container">
-        
         <Button
           startIcon={<KeyboardCommandKeyIcon />}
           size="large"
@@ -65,11 +64,10 @@ function Home() {
         <Typography variant="subtitle1" mt={2} gutterBottom={true}>
           Or
         </Typography>
-        
-       { (log===true)?(<Login/>): (<SignIn/>)}
+
+        {log === true ? <Login /> : <SignIn />}
       </div>
     </>
   );
 }
 export default Home;
-
