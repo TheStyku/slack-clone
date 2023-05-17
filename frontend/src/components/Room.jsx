@@ -10,8 +10,10 @@ import ChatIcon from "@mui/icons-material/Chat";
 import Switch from "@mui/material/Switch";
 import Divider from "@mui/material/Divider";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+import tooltipClasses from "@mui/material/Tooltip/tooltipClasses";
 import RoomList from "./RoomList";
 import { useState, useContext } from "react";
 import UserContext from "../context/user/UserContext";
@@ -21,13 +23,25 @@ import {
   usePopupState,
 } from "material-ui-popup-state/hooks";
 
-function Room({socket}) {
+function Room({ socket }) {
   const { name } = useContext(UserContext);
   const [checked, setChecked] = useState(false);
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
+
+  const DarkTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: theme.palette.common.black,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.black,
+      fontSize: theme.typography.pxToRem(14),
+    },
+  }));
 
   const theme = createTheme({
     status: {
@@ -63,21 +77,35 @@ function Room({socket}) {
             alignItems="stretch"
             divider={<Divider style={{ background: "grey" }} flexItem />}
           >
-            <Divider style={{ background: "grey" }} />
-            <ButtonGroup variant="text" >
+            <Divider />
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              sx={{ marginTop: "0.3rem", marginBottom: "0.3rem" }}
+            >
               <Button
                 {...bindTrigger(popupState1)}
-                fullWidth
                 color="neutral"
-                sx={{ borderRight: "none" }}
+                sx={{ marginLeft: "1rem" }}
               >
                 {name}
                 <ArrowDropDownIcon />
               </Button>
-              <Button sx={{ p: "10px" }} color="neutral">
-                <EditRoundedIcon fontSize="small" />
-              </Button>
-            </ButtonGroup>
+              <DarkTooltip title="New Message">
+                <Button
+                  sx={{
+                    p: "10px",
+                    marginRight: "1rem",
+                    minWidth: "0px",
+                    borderRadius: "25px",
+                  }}
+                  color="neutral"
+                >
+                  <EditRoundedIcon fontSize="small" />
+                </Button>
+              </DarkTooltip>
+            </Stack>
+
             <Menu
               id="demo-positioned-menu"
               aria-labelledby="demo-positioned-button"
@@ -136,7 +164,7 @@ function Room({socket}) {
 
             <Box
               sx={{
-                height: "61.8vh",
+                height: " 60.3vh",
                 marginTop: "0.5rem",
               }}
             >

@@ -58,7 +58,7 @@ function Message({ socket }) {
 
   return (
     <Box>
-      <List sx={{ maxHeight: 350, overflow: "auto", minHeight: "22rem" }}>
+      <List sx={{ maxHeight: 360, overflow: "auto", minHeight: "21rem" }}>
         {message.lenght !== 0? (
           message.map((messag, index) =>
             (index > 0 &&
