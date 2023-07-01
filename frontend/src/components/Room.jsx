@@ -9,8 +9,7 @@ import SendIcon from "@mui/icons-material/Send";
 import ChatIcon from "@mui/icons-material/Chat";
 import Switch from "@mui/material/Switch";
 import Divider from "@mui/material/Divider";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import {styled } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import tooltipClasses from "@mui/material/Tooltip/tooltipClasses";
@@ -43,29 +42,12 @@ function Room({ socket }) {
     },
   }));
 
-  const theme = createTheme({
-    status: {
-      danger: "#e53e3e",
-    },
-    palette: {
-      neutral: {
-        main: "#f5f5f5",
-      },
-      grey: {
-        main: "#bdbdbd",
-      },
-    },
-    typography: {
-      button: {
-        textTransform: "none",
-      },
-    },
-  });
+  
   const popupState1 = usePopupState({ variant: "popover", popupId: "top" });
   const popupState2 = usePopupState({ variant: "popover", popupId: "botton" });
   return (
     <>
-      <ThemeProvider theme={theme}>
+      
         <Box
           sx={{
             backgroundColor: "#303E4D",
@@ -168,7 +150,7 @@ function Room({ socket }) {
                 marginTop: "0.5rem",
               }}
             >
-              <RoomList theme={theme} socket={socket} />
+              <RoomList socket={socket} />
             </Box>
             <Box
               sx={{
@@ -209,7 +191,7 @@ function Room({ socket }) {
             </Box>
           </Stack>
         </Box>
-      </ThemeProvider>
+      
     </>
   );
 }

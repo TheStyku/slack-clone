@@ -3,7 +3,6 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Collapse from "@mui/material/Collapse";
 import AddIcon from "@mui/icons-material/Add";
 import TagIcon from "@mui/icons-material/Tag";
@@ -79,22 +78,9 @@ function RoomList({socket}) {
     getMessage();
   };
 
-  const theme = createTheme({
-    status: {
-      danger: "#e53e3e",
-    },
-    palette: {
-      neutral: {
-        main: "#f5f5f5",
-      },
-      grey: {
-        main: "#bdbdbd",
-      },
-    },
-  });
-
+  
   return (
-    <ThemeProvider theme={theme}>
+   <>
       <List
         sx={{
           width: "100%",
@@ -220,7 +206,8 @@ function RoomList({socket}) {
           <Button onClick={handleSubmit} variant="contained" color='success'>Create</Button>
         </DialogActions>
       </Dialog>
-    </ThemeProvider>
+      </>
+    
   );
 }
 export default RoomList;

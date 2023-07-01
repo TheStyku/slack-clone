@@ -53,26 +53,9 @@ function Navbar() {
 
   const popupState = usePopupState({ variant: "popover", popupId: "demoMenu" });
 
-  const theme = createTheme({
-    palette: {
-      neutral: {
-        main: "#f5f5f5",
-      },
-      button: {
-        main: "#ffffff33",
-      },
-      grey: {
-        main: "#bdbdbd",
-      },
-    },
-    typography: {
-      button: {
-        textTransform: "none",
-      },
-    },
-  });
+  
   return (
-    <ThemeProvider theme={theme}>
+    
       <Box sx={{ backgroundColor: "#2C3849" }}>
         <Grid sx={{ flexGrow: 1 }} container>
           <Grid
@@ -181,7 +164,7 @@ function Navbar() {
           </Grid>
         </Grid>
       </Box>
-    </ThemeProvider>
+   
   );
 }
 export default Navbar;

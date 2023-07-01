@@ -10,7 +10,7 @@ import TextInput from "./TextInput";
 import Message from "./Message";
 import Avatar from "@mui/material/Avatar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import UserContext from "../context/user/UserContext";
 import axios from "axios";
 
@@ -34,7 +34,7 @@ function Chat({ socket }) {
       },
     },
   });
-  const { message, token, room, dispatch } = useContext(UserContext);
+  const { token, room, dispatch } = useContext(UserContext);
 
   const API_URL = "http://localhost:4000/api/message/";
   const config = {
