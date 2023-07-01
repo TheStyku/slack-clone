@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 
-// @desc    Get goals
+// @desc    Get message
 // @route   GET /api/message
 // @access  Private
 const getMessages = asyncHandler(async (req, res) => {
@@ -15,7 +15,7 @@ const getMessages = asyncHandler(async (req, res) => {
   res.status(200).json(message);
 });
 
-// @desc    Set goal
+// @desc    Send message
 // @route   POST /api/message
 // @access  Private
 const setMessage = asyncHandler(async (req, res) => {
@@ -32,11 +32,6 @@ const setMessage = asyncHandler(async (req, res) => {
 
   res.status(200).json(message);
 });
-
-// @desc    CHECK IF ROOM EXIST
-// @route   GET /api/room
-// @access  Private
-
 
 module.exports = {
   getMessages,

@@ -62,7 +62,7 @@ function Message({ socket }) {
         {message.lenght !== 0? (
           message.map((messag, index) =>
             (index > 0 &&
-              message[index].user.name !== message[index - 1].user.name) ||
+              message[index].user !== message[index - 1].user) ||
             index === 0 ? (
               <ListItem
                 key={index}
@@ -95,7 +95,7 @@ function Message({ socket }) {
                         component="h1"
                         variant="h6"
                       >
-                        {messag.user.name}
+                        {messag.user}
                       </Typography>
                       <Tooltip placement="top" title="5:43 PM">
                         <Typography
