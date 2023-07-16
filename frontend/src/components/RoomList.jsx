@@ -33,11 +33,12 @@ function RoomList({ socket }) {
 
   const getMessage = async (name) => {
     await axios
-      .get(API_URL, 
-        { headers: { Authorization: `Bearer ${token}` },
+      .get(API_URL, {
+        headers: { Authorization: `Bearer ${token}` },
         params: {
           room: name,
-        },})
+        },
+      })
       .then((response) => {
         console.log(response.data);
         dispatch({ type: "CLEAR_MESSAGE" });
@@ -72,10 +73,9 @@ function RoomList({ socket }) {
     setOpen2(false);
   };
 
-  const channelClick =(name)=>{
+  const channelClick = (name) => {
     getMessage(name);
-   
-  }
+  };
 
   const handleSubmit = () => {
     dispatch({ type: "SET_ROOM", payload: { room } });
@@ -120,10 +120,18 @@ function RoomList({ socket }) {
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding dense>
+          <List
+            component="div"
+            disablePadding
+            dense
+            sx={{ maxHeight: "20rem", overflow: "auto" }}
+          >
             {chan.map((cha, index) => (
               <ListItem>
-                <ListItemButton onClick={()=>channelClick(chan[index])} sx={{ pl: 4 }}>
+                <ListItemButton
+                  onClick={() => channelClick(chan[index])}
+                  sx={{ pl: 4 }}
+                >
                   <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
                     <TagIcon color="grey" />
                   </ListItemIcon>
@@ -166,7 +174,7 @@ function RoomList({ socket }) {
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open1} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding dense>
+          <List component="div" disablePadding dense  sx={{ maxHeight: "20rem", overflow: "auto" }}>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
                 <TagIcon color="grey" />
