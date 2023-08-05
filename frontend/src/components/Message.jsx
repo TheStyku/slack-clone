@@ -1,4 +1,4 @@
-import {useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
@@ -58,103 +58,104 @@ function Message({ socket }) {
 
   return (
     <Box>
-      <List sx={{ maxHeight: 360, overflow: "auto", minHeight: "21rem" }}>
-        {message.lenght !== 0? (
-          message.map((messag, index) =>
-            (index > 0 &&
-              message[index].user !== message[index - 1].user) ||
-            index === 0 ? (
-              <ListItem
-                key={index}
-                sx={{
-                  "&:hover": { backgroundColor: "#f8f8f8" },
-                  paddingBottom: "0px",
-                }}
-              >
-                <Tooltip
-                  placement="bottom-end"
-                  title={
-                    <Container fixed>
-                      <Paper />
-                      <Button onClick={handleClick}>Add</Button>
-                      <Button onClick={handleClick1}>get</Button>
-                    </Container>
-                  }
+      <List sx={{ maxHeight: 360, overflow: "auto", minHeight: "21rem", display: 'flex', flexDirection: 'column-reverse'}}>
+        {message.lenght !== 0 ? (
+          message
+            .map((messag, index) =>
+              (index > 0 && message[index].user !== message[index - 1].user) ||
+              index === 0 ? (
+                <ListItem
+                  key={index}
+                  sx={{
+                    "&:hover": { backgroundColor: "#f8f8f8" },
+                    paddingBottom: "0px",
+                  }}
                 >
-                  <ListItemAvatar sx={{ minWidth: "46px" }}>
-                    <Avatar variant="square" sx={{ width: 36, height: 36 }}>
-                      H
-                    </Avatar>
-                  </ListItemAvatar>
-                </Tooltip>
-                <ListItemText
-                  primary={
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="h1"
-                        variant="h6"
-                      >
-                        {messag.user}
-                      </Typography>
-                      <Tooltip placement="top" title="5:43 PM">
+                  <Tooltip
+                    placement="bottom-end"
+                    title={
+                      <Container fixed>
+                        <Paper />
+                        <Button onClick={handleClick}>Add</Button>
+                        <Button onClick={handleClick1}>get</Button>
+                      </Container>
+                    }
+                  >
+                    <ListItemAvatar sx={{ minWidth: "46px" }}>
+                      <Avatar variant="square" sx={{ width: 36, height: 36 }}>
+                        H
+                      </Avatar>
+                    </ListItemAvatar>
+                  </Tooltip>
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography
+                          sx={{ display: "inline" }}
+                          component="h1"
+                          variant="h6"
+                        >
+                          {messag.user}
+                        </Typography>
+                        <Tooltip placement="top" title="5:43 PM">
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            ml={1}
+                          >
+                            5:43 PM
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                    }
+                    secondary={
+                      <>
                         <Typography
                           sx={{ display: "inline" }}
                           component="span"
                           variant="body2"
-                          ml={1}
                         >
-                          5:43 PM
+                          {messag.text}
                         </Typography>
-                      </Tooltip>
-                    </Box>
-                  }
-                  secondary={
-                    <>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                      >
-                        {messag.text}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-            ) : (
-              <ListItem
-                key={index}
-                sx={{
-                  "&:hover": { backgroundColor: "#f8f8f8" },
+                      </>
+                    }
+                  />
+                </ListItem>
+              ) : (
+                <ListItem
+                  key={index}
+                  sx={{
+                    "&:hover": { backgroundColor: "#f8f8f8" },
 
-                  paddingBottom: "0px",
-                }}
-              >
-                <ListItemAvatar sx={{ minWidth: "46px" }}>
-                  <Avatar
-                    variant="square"
-                    sx={{ width: 36, height: 36, display: "none" }}
-                  >
-                    H
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  secondary={
-                    <>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                      >
-                        {messag.text}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
+                    paddingBottom: "0px",
+                  }}
+                >
+                  <ListItemAvatar sx={{ minWidth: "46px" }}>
+                    <Avatar
+                      variant="square"
+                      sx={{ width: 36, height: 36, display: "none" }}
+                    >
+                      H
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    secondary={
+                      <>
+                        <Typography
+                          sx={{ display: "inline" }}
+                          component="span"
+                          variant="body2"
+                        >
+                          {messag.text}
+                        </Typography>
+                      </>
+                    }
+                  />
+                </ListItem>
+              )
             )
-          )
+            .reverse()
         ) : (
           <></>
         )}

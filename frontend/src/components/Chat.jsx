@@ -14,8 +14,8 @@ import { useEffect, useContext } from "react";
 import UserContext from "../context/user/UserContext";
 import axios from "axios";
 
-
 function Chat({ socket }) {
+  let ifInit = false;
   const theme = createTheme({
     palette: {
       neutral: {
@@ -34,53 +34,96 @@ function Chat({ socket }) {
       },
     },
   });
-  const { token, room, dispatch } = useContext(UserContext);
+  const { activeRooms, token, room, dispatch } = useContext(UserContext);
 
   const API_URL = "http://localhost:4000/api/message/";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     params: {
-      room: room
-    }
+      room: room,
+    },
   };
 
   const handleClick1 = async (e) => {
     await axios
-      .get(
-        API_URL,         
-        config
-      )
+      .get(API_URL, config)
       .then((response) => {
         console.log(response.data);
-        dispatch({type:'CLEAR_MESSAGE'})
-        response.data.forEach(item=> 
-          dispatch({type:'ADD_MESSAGE', payload:{ id: 1, text: item.text, name: item.user.name}})
-          )
+        dispatch({ type: "CLEAR_MESSAGE" });
+        response.data.forEach((item) =>
+          dispatch({
+            type: "ADD_MESSAGE",
+            payload: { id: 1, text: item.text, name: item.user.name },
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  };
+  const getMessage = async (name) => {
+    await axios
+      .get(API_URL, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          room: name,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        dispatch({ type: "CLEAR_MESSAGE" });
+        response.data.forEach((item) =>
+          dispatch({
+            type: "ADD_MESSAGE",
+            payload: { id: item._id, text: item.text, name: item.user.name },
+          })
+        );
       })
       .catch((err) => {
         console.log(err.response.data.message);
       });
   };
 
-  const handleClick = () => {};
+  const handleClick = (rooms) => {
+    console.log(rooms);
+    dispatch({ type: "SET_ROOM", payload: { room: rooms } });
+    getMessage(rooms);
+  };
 
-  useEffect(() => {  
-    handleClick1()
-  },[] );
+  useEffect(() => {
+    if (!ifInit) {
+      handleClick1();
+       // eslint-disable-next-line
+      ifInit = true;
+      
+    }
+  }, []);
 
   return (
     <>
       <ThemeProvider theme={theme}>
         <Grid sx={{ flexGrow: 1 }} rowSpacing={1} container mt={0.05}>
           <Grid item xs={10} px={2} mb={1}>
-            <Button variant="text" color="dark" sx={{ fontWeight: 600 }}>
-              <TagIcon /> general <ArrowDropDownIcon />
-            </Button>
+            {activeRooms.map((rooms, index) => (
+              <Button
+                key={index}
+                onClick={(e) => handleClick(rooms)}
+                variant="text"
+                color="dark"
+                sx={{ fontWeight: 600 }}
+              >
+                <TagIcon /> {rooms} <ArrowDropDownIcon />
+              </Button>
+            ))}
           </Grid>
-          <Grid item xs={1}  sx={{ display: "flex", alignItems: "center", paddingLeft: '5rem' }}>
+          <Grid
+            item
+            xs={1}
+            sx={{ display: "flex", alignItems: "center", paddingLeft: "5rem" }}
+          >
             <ButtonGroup size="small">
               <Button size="small" color="dark">
-                <Avatar  sx={{ width: 20, height: 20 }}/> 1
+                <Avatar sx={{ width: 20, height: 20 }} /> 1
               </Button>
               <Button size="small" color="dark">
                 Add

@@ -96,7 +96,13 @@ const userReducer = (state, { type, payload }) => {
         return {
             ...state,
             message:[]
-        }
+        };
+        case 'AddActiveRooms':
+          return {
+            ...state,
+            activeRooms: [...state.activeRooms, payload.activeRooms]
+          }
+
 
     default:
       return state;

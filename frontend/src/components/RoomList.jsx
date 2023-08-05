@@ -26,7 +26,7 @@ function RoomList({ socket }) {
   const [open1, setOpen1] = useState(true);
   const [open2, setOpen2] = useState(false);
   const [room, setRoom] = useState("");
-  const { dispatch, token } = useContext(UserContext);
+  const { dispatch, token, activeRooms } = useContext(UserContext);
   const [chan, setChan] = useState(["general"]);
 
   const API_URL = "http://localhost:4000/api/message/";
@@ -75,6 +75,9 @@ function RoomList({ socket }) {
 
   const channelClick = (name) => {
     getMessage(name);
+    if (!activeRooms.includes(name)) {
+      dispatch({ type: "AddActiveRooms", payload: { activeRooms: name } });
+    }
   };
 
   const handleSubmit = () => {
@@ -127,7 +130,7 @@ function RoomList({ socket }) {
             sx={{ maxHeight: "20rem", overflow: "auto" }}
           >
             {chan.map((cha, index) => (
-              <ListItem>
+              <ListItem key={index}>
                 <ListItemButton
                   onClick={() => channelClick(chan[index])}
                   sx={{ pl: 4 }}
@@ -174,7 +177,12 @@ function RoomList({ socket }) {
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open1} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding dense  sx={{ maxHeight: "20rem", overflow: "auto" }}>
+          <List
+            component="div"
+            disablePadding
+            dense
+            sx={{ maxHeight: "20rem", overflow: "auto" }}
+          >
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
                 <TagIcon color="grey" />
