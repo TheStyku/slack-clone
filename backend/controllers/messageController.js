@@ -9,7 +9,7 @@ const User = require("../models/userModel");
 const getMessages = asyncHandler(async (req, res) => {
   const message = await Message.find(
     { room: req.query.room },
-    "text room"
+    "text room date"
   ).populate("user", "name");
 
   res.status(200).json(message);
@@ -28,6 +28,7 @@ const setMessage = asyncHandler(async (req, res) => {
     room: req.body.room,
     user: req.user.id,
     text: req.body.text,
+    date: req.body.date
   });
 
   res.status(200).json(message);

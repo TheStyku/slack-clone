@@ -77,6 +77,7 @@ function TextInput({ socket }) {
           room: room,
           text: message,
           ID: _id,
+          date: new Date(),
         },
         config
       )
@@ -90,7 +91,7 @@ function TextInput({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message, room: room, name: name});
+    socket.emit("send_message", { message: message, room: room, name: name,date: new Date()});
     sendMessage();
     setMessage("");
   };

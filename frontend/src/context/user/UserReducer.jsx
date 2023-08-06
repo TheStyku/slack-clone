@@ -75,6 +75,7 @@ const userReducer = (state, { type, payload }) => {
             id: payload.id,
             text: payload.text,
             user: payload.name,
+            date: payload.date,
           },
         ],
       };
@@ -87,7 +88,8 @@ const userReducer = (state, { type, payload }) => {
           {
             id: payload.id,
             text: payload.text,
-            user:  payload.name ,
+            user:  payload.name,
+            date: payload.date,
           },
         ],
       };

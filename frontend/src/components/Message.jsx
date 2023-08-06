@@ -19,7 +19,7 @@ function Message({ socket }) {
     socket.emit("join_room", "start");
   };
 
-  const API_URL = "http://localhost:4000/api/message/";
+  const API_URL = process.env.REACT_APP_TITLE+"api/message/";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     params: {
@@ -36,7 +36,7 @@ function Message({ socket }) {
         response.data.forEach((item) =>
           dispatch({
             type: "ADD_MESSAGE",
-            payload: { id: 1, text: item.text, name: item.user.name },
+            payload: { id: 1, text: item.text, name: item.user.name,date: new Date() },
           })
         );
       })
@@ -49,7 +49,7 @@ function Message({ socket }) {
     socket.off("recive_messege").on("recive_messege", (data) => {
       dispatch({
         type: "ADD_MESSAGE",
-        payload: { id: 1, text: data.message, name: data.name },
+        payload: { id: 1, text: data.message, name: data.name, date: data.date },
       });
       console.log("i fire once");
       console.log(data);
@@ -97,14 +97,14 @@ function Message({ socket }) {
                         >
                           {messag.user}
                         </Typography>
-                        <Tooltip placement="top" title="5:43 PM">
+                        <Tooltip placement="top" title={messag.date}>
                           <Typography
                             sx={{ display: "inline" }}
                             component="span"
                             variant="body2"
                             ml={1}
                           >
-                            5:43 PM
+                           {messag.date}
                           </Typography>
                         </Tooltip>
                       </Box>

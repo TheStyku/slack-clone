@@ -3,11 +3,11 @@ import User from "./components/User"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from "./context/user/UserContext";
 
-
+console.log(process.env.REACT_APP_SECRET_NAME)
 function App() {
   return (
     <>
-
+  
     <UserProvider>
       <Router>
         <Routes>

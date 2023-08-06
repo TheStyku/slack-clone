@@ -26,8 +26,8 @@ io.on('connection', socket => {
       socket.join(room);
       console.log(room)
     })
-    socket.on("send_message", ({room, message, name }) =>{
-      io.in(room).emit('recive_messege', {rooom: room, message: message, name: name} );
+    socket.on("send_message", ({room, message, name, date }) =>{
+      io.in(room).emit('recive_messege', {rooom: room, message: message, name: name, date: date} );
       //io.emit('recive_messege', data)
       console.log(message,room,)
     })

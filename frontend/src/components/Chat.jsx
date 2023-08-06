@@ -14,6 +14,7 @@ import { useEffect, useContext } from "react";
 import UserContext from "../context/user/UserContext";
 import axios from "axios";
 
+
 function Chat({ socket }) {
   let ifInit = false;
   const theme = createTheme({
@@ -36,7 +37,7 @@ function Chat({ socket }) {
   });
   const { activeRooms, token, room, dispatch } = useContext(UserContext);
 
-  const API_URL = "http://localhost:4000/api/message/";
+  const API_URL =  process.env.REACT_APP_TITLE+"api/message/";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     params: {
@@ -53,7 +54,7 @@ function Chat({ socket }) {
         response.data.forEach((item) =>
           dispatch({
             type: "ADD_MESSAGE",
-            payload: { id: 1, text: item.text, name: item.user.name },
+            payload: { id: 1, text: item.text, name: item.user.name, date: item.date },
           })
         );
       })
@@ -75,7 +76,7 @@ function Chat({ socket }) {
         response.data.forEach((item) =>
           dispatch({
             type: "ADD_MESSAGE",
-            payload: { id: item._id, text: item.text, name: item.user.name },
+            payload: { id: item._id, text: item.text, name: item.user.name, date: item.date },
           })
         );
       })

@@ -14,6 +14,10 @@ const messageSchema = mongoose.Schema(
     room: {
         type: String,
         required: [true, 'Please add a room']
+    },
+    date:{
+      type: String,
+      required: [true, 'Please add a date']
     }
   },
   {
