@@ -7,7 +7,7 @@ import { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/user/UserContext";
 import { createTheme, ThemeProvider, } from "@mui/material/styles";
-const socket = socketIO.connect("http://localhost:4000");
+const socket = socketIO.connect( process.env.REACT_APP_TITLE);
 
 function User() {
   const { _id, room} = useContext(UserContext);
