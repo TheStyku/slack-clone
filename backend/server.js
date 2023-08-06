@@ -8,7 +8,7 @@ const server = require('http').Server(app);
 const cors = require('cors');
 const io = require('socket.io')(server, {
     cors: {
-        origin: ["https://slackclonefront.onrender.com"]
+        origin: ["http://localhost:3000/"]
     }
 });
 
