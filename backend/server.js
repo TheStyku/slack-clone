@@ -10,7 +10,6 @@ const io = require('socket.io')(server, {
     cors: {
         //origin: ["http://localhost:3000"]
         origin: ["https://slackclonefront.onrender.com"],
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     },
   
 });
