@@ -29,7 +29,7 @@ function RoomList({ socket }) {
   const { dispatch, token, activeRooms } = useContext(UserContext);
   const [chan, setChan] = useState(["general"]);
 
-  const API_URL = "http://localhost:4000/api/message/";
+  const API_URL =process.env.REACT_APP_TITLE+"/api/message/";
 
   const getMessage = async (name) => {
     await axios

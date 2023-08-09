@@ -19,7 +19,7 @@ function Message({ socket }) {
     socket.emit("join_room", "start");
   };
 
-  const API_URL = process.env.REACT_APP_TITLE+"api/message/";
+  const API_URL = process.env.REACT_APP_TITLE+"/api/message/";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     params: {

@@ -52,7 +52,7 @@ function TextInput({ socket }) {
   const [message, setMessage] = useState("");
   const { room, token, _id, name } = useContext(UserContext);
 
-  const API_URL = "http://localhost:4000/api/message/";
+  const API_URL = process.env.REACT_APP_TITLE+"/api/message/";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
