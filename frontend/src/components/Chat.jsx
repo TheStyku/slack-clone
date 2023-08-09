@@ -37,7 +37,7 @@ function Chat({ socket }) {
   });
   const { activeRooms, token, room, dispatch } = useContext(UserContext);
 
-  const API_URL =  process.env.REACT_APP_TITLE+"api/message/";
+  const API_URL =  process.env.REACT_APP_TITLE+"api/message/:4000";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     params: {
