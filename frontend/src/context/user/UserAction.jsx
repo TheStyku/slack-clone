@@ -12,13 +12,13 @@ const register = async (userData) => {
     alert(err.message)
     console.log(err.response.data.message)
     return err.response.data.message
-  })
+  })   
 };
 
 // Login user
 const login = async (userData) => {
   const res =await axios.post(API_URL +'login', userData).then((response) =>{
-    console.log(response.data.JSON)
+    console.log(JSON.stringify(response.data));
     localStorage.setItem("user", JSON.stringify(response.data));
     return res.data
   }).catch(err=>{
