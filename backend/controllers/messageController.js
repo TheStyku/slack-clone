@@ -3,9 +3,6 @@ const asyncHandler = require("express-async-handler");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 
-// @desc    Get message
-// @route   GET /api/message
-// @access  Private
 const getMessages = asyncHandler(async (req, res) => {
   const message = await Message.find(
     { room: req.query.room },
@@ -15,9 +12,7 @@ const getMessages = asyncHandler(async (req, res) => {
   res.status(200).json(message);
 });
 
-// @desc    Send message
-// @route   POST /api/message
-// @access  Private
+
 const setMessage = asyncHandler(async (req, res) => {
   if (!req.body.text) {
     res.status(400);

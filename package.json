@@ -29,7 +29,9 @@
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:TheStyku/slack-clone.git"

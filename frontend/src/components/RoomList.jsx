@@ -2,6 +2,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
+import MessageIcon from "@mui/icons-material/Message";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,22 +15,38 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
 import UserContext from "../context/user/UserContext";
-import { useState, useContext } from "react";
+import { useState, useContext,Fragment } from "react";
 import axios from "axios";
 import { ListItem } from "@mui/material";
 
 function RoomList({ socket }) {
-  const [open, setOpen] = useState(true);
-  const [open1, setOpen1] = useState(true);
-  const [open2, setOpen2] = useState(false);
+  const [openChanels, setOpenChanels] = useState(true);
+  const [openDirectMessage, setOpenDirectMessage] = useState(true);
+  const [openAddChannels, setOpenAddChannels] = useState(false);
+  const [openAddDirectMessage, setAddDirectMessage] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [error, setError] = useState();
   const [room, setRoom] = useState("");
-  const { dispatch, token, activeRooms } = useContext(UserContext);
+  const [description, setDescription] = useState("");
+  const [password, setPasword] = useState("");
+  const { dispatch, token, activeRooms, email } = useContext(UserContext);
   const [chan, setChan] = useState(["general"]);
+  const [name, setName] = useState("");
+  const [users, setUsers] = useState([]);
 
-  const API_URL =process.env.REACT_APP_TITLE+"/api/message/";
+  const API_URL = process.env.REACT_APP_TITLE + "/api/message/";
+  const API_URL2 = process.env.REACT_APP_TITLE + "/api/room/";
+  const API_URL3 = process.env.REACT_APP_TITLE + "/api/users/search";
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
 
   const getMessage = async (name) => {
     await axios
@@ -45,7 +62,12 @@ function RoomList({ socket }) {
         response.data.forEach((item) =>
           dispatch({
             type: "ADD_MESSAGE",
-            payload: { id: item._id, text: item.text, name: item.user.name },
+            payload: {
+              id: item._id,
+              text: item.text,
+              name: item.user.name,
+              date: item.date,
+            },
           })
         );
       })
@@ -54,23 +76,89 @@ function RoomList({ socket }) {
       });
   };
 
+  const searchUser = async (e) => {
+    await axios
+      .get(API_URL3, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          name: name,
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setUsers([]);
+        setErrorOpen(false);
+        response.data.forEach((item) => {
+          setUsers((arr) => [...arr, { name: item.name, email: item.email }]);
+        });
+      })
+      .catch((err) => {
+        setUsers([]);
+        console.log(err.response.data.message);
+        setError(err.response.data.message);
+        setErrorOpen(true);
+      });
+  };
+
   const handleChange = (e) => {
     setRoom(e.target.value);
   };
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
-  const handleClick1 = () => {
-    setOpen1(!open1);
+  const handleChangeName = (e) => {
+    setName(e.target.value);
   };
 
-  const handleClickOpen = () => {
-    setOpen2(true);
+  const hadletry = async (e) => {
+    await axios
+      .post(
+        API_URL2,
+        {
+          name: room,
+          description: description,
+          password: password,
+          email: email,
+        },
+        config
+      )
+      .then((response) => {
+        console.log(response.data);
+        dispatch({ type: "SET_ROOM", payload: { room } });
+        console.log({ room });
+        setChan([...chan, room]);
+        setOpenAddChannels(false);
+        getMessage(room);
+        setRoom("");
+        setPasword("");
+        setDescription("");
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        setError(err.response.data.message);
+        setErrorOpen(true);
+      });
   };
 
-  const handleClose = () => {
-    setOpen2(false);
+  const handleOpenChanels = () => {
+    setOpenChanels(!openChanels);
+  };
+  const handleDirectMessage = () => {
+    setOpenDirectMessage(!openDirectMessage);
+  };
+
+  const handleOpenAddChannels = () => {
+    setOpenAddChannels(true);
+  };
+
+  const handleCloseAddChannels = () => {
+    setOpenAddChannels(false);
+  };
+
+  const handleOpenAddDirectMessage = () => {
+    setAddDirectMessage(true);
+  };
+
+  const handleCloseAddDirectMessage = () => {
+    setAddDirectMessage(false);
   };
 
   const channelClick = (name) => {
@@ -78,14 +166,6 @@ function RoomList({ socket }) {
     if (!activeRooms.includes(name)) {
       dispatch({ type: "AddActiveRooms", payload: { activeRooms: name } });
     }
-  };
-
-  const handleSubmit = () => {
-    dispatch({ type: "SET_ROOM", payload: { room } });
-    console.log({ room });
-    setChan([...chan, room]);
-    setOpen2(false);
-    getMessage(room);
   };
 
   return (
@@ -107,7 +187,7 @@ function RoomList({ socket }) {
           ></ListSubheader>
         }
       >
-        <ListItemButton onClick={handleClick}>
+        <ListItemButton onClick={handleOpenChanels}>
           <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
             <ArrowRightIcon color="grey" />
           </ListItemIcon>
@@ -120,9 +200,9 @@ function RoomList({ socket }) {
               mb: "2px",
             }}
           />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {openChanels ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse in={openChanels} timeout="auto" unmountOnExit>
           <List
             component="div"
             disablePadding
@@ -152,7 +232,7 @@ function RoomList({ socket }) {
             ))}
 
             <ListItem>
-              <ListItemButton onClick={handleClickOpen} sx={{ pl: 4 }}>
+              <ListItemButton onClick={handleOpenAddChannels} sx={{ pl: 4 }}>
                 <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
                   <AddIcon color="grey" />
                 </ListItemIcon>
@@ -169,14 +249,14 @@ function RoomList({ socket }) {
             </ListItem>
           </List>
         </Collapse>
-        <ListItemButton onClick={handleClick1}>
+        <ListItemButton onClick={handleDirectMessage}>
           <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
             <ArrowRightIcon color="grey" />
           </ListItemIcon>
           <ListItemText primary="Direct messages " />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {openChanels ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open1} timeout="auto" unmountOnExit>
+        <Collapse in={openDirectMessage} timeout="auto" unmountOnExit>
           <List
             component="div"
             disablePadding
@@ -189,7 +269,7 @@ function RoomList({ socket }) {
               </ListItemIcon>
               <ListItemText primary="You" />
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton onClick={handleOpenAddDirectMessage} sx={{ pl: 4 }}>
               <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
                 <AddIcon color="grey" />
               </ListItemIcon>
@@ -198,14 +278,15 @@ function RoomList({ socket }) {
           </List>
         </Collapse>
       </List>
-      <Dialog open={open2} onClose={handleClose} maxWidth="xs" fullWidth={true}>
+      <Dialog
+        open={openAddChannels}
+        onClose={handleCloseAddChannels}
+        maxWidth="xs"
+        fullWidth={true}
+      >
         <DialogTitle>Create a channel</DialogTitle>
         <DialogContent>
-          <DialogContentText gutterBottom>
-            Channels are where your team communicates. They’re best when
-            organized around a topic — #marketing, for example.
-          </DialogContentText>
-          <DialogContentText variant="subtitle1">Name</DialogContentText>
+          <DialogContentText variant="subtitle1">Room Name</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -215,20 +296,133 @@ function RoomList({ socket }) {
             fullWidth
             variant="outlined"
           />
-          <DialogContentText variant="subtitle1">Description</DialogContentText>
+          <DialogContentText variant="subtitle1">
+            Description - optional
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            fullWidth
+            variant="outlined"
+          />
+          <DialogContentText variant="subtitle1">
+            Password - optional
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="pasword"
+            type="password"
+            value={password}
+            onChange={(e) => setPasword(e.target.value)}
             fullWidth
             variant="outlined"
           />
         </DialogContent>
+        <Collapse in={errorOpen}>
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setErrorOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{ mb: 2 }}
+          >
+            {error}
+          </Alert>
+        </Collapse>
         <DialogActions>
-          <Button onClick={handleSubmit} variant="contained" color="success">
+          <Button onClick={hadletry} variant="contained" color="success">
             Create
           </Button>
         </DialogActions>
+       
+      </Dialog>
+      <Dialog
+        scroll="paper"
+        open={openAddDirectMessage}
+        onClose={handleCloseAddDirectMessage}
+        maxWidth="xs"
+        fullWidth={true}
+      >
+        <DialogTitle>Search User</DialogTitle>
+        <DialogContent sx={{overflow:'unset'}}>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="room"
+            value={name}
+            type="text"
+            onChange={handleChangeName}
+            fullWidth
+            variant="outlined"
+          />
+        </DialogContent>
+        <Collapse in={errorOpen}>
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setErrorOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{ mb: 2 }}
+          >
+            {error}
+          </Alert>
+        </Collapse>
+        <DialogActions>
+          <Button onClick={searchUser} variant="contained" color="success">
+            Search
+          </Button>
+        </DialogActions>
+        <Grid
+          container
+          spacing={2}
+          paddingLeft={6}
+          marginY={1}
+          alignItems="center"
+        >
+          {users.lenght === 0 ? (
+            <DialogContent>'No Result'</DialogContent>
+          ) : (
+            <>
+              {users.map((user, index) => (
+                <Fragment key={index}>
+                  <Grid xs={4} item>
+                    {user.name}
+                  </Grid>
+                  <Grid xs={6} item>
+                    {user.email}
+                  </Grid>
+                  <Grid xs={2} item>
+                    <IconButton size="small" edge="end">
+                      <MessageIcon color="primary" />
+                    </IconButton>
+                  </Grid>
+                </Fragment>
+              ))}
+            </>
+          )}
+        </Grid>
       </Dialog>
     </>
   );

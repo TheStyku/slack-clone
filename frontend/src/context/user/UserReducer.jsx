@@ -88,23 +88,22 @@ const userReducer = (state, { type, payload }) => {
           {
             id: payload.id,
             text: payload.text,
-            user:  payload.name,
+            user: payload.name,
             date: payload.date,
           },
         ],
       };
       return updatedState;
-      case 'CLEAR_MESSAGE':
-        return {
-            ...state,
-            message:[]
-        };
-        case 'AddActiveRooms':
-          return {
-            ...state,
-            activeRooms: [...state.activeRooms, payload.activeRooms]
-          }
-
+    case "CLEAR_MESSAGE":
+      return {
+        ...state,
+        message: [],
+      };
+    case "AddActiveRooms":
+      return {
+        ...state,
+        activeRooms: [...state.activeRooms, payload.activeRooms],
+      };
 
     default:
       return state;

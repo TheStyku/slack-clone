@@ -3,8 +3,6 @@ import Grid from "@mui/material/Grid";
 import TagIcon from "@mui/icons-material/Tag";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Divider from "@mui/material/Divider";
-import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import TextInput from "./TextInput";
 import Message from "./Message";
@@ -46,6 +44,7 @@ function Chat({ socket }) {
   };
 
   const handleClick1 = async (e) => {
+
     await axios
       .get(API_URL, config)
       .then((response) => {
@@ -59,7 +58,7 @@ function Chat({ socket }) {
         );
       })
       .catch((err) => {
-        console.log(err.response.data.message);
+        console.log(err.response);
       });
   };
   const getMessage = async (name) => {
@@ -79,8 +78,7 @@ function Chat({ socket }) {
             payload: { id: item._id, text: item.text, name: item.user.name, date: item.date },
           })
         );
-      })
-      .catch((err) => {
+      }).catch((err) => {
         console.log(err.response.data.message);
       });
   };
@@ -132,24 +130,6 @@ function Chat({ socket }) {
             </ButtonGroup>
           </Grid>
         </Grid>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            m: 1,
-
-            height: 20,
-          }}
-        >
-          <Chip
-            label="Add bookmark"
-            variant="outlined"
-            size="small"
-            onClick={handleClick}
-            icon={<ArrowDropDownIcon />}
-          />
-        </Box>
-
         <Divider />
         <Message socket={socket} />
         <TextInput socket={socket} />

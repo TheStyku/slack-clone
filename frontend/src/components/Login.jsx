@@ -2,13 +2,12 @@ import { useFormik } from "formik";
 import { useContext } from "react";
 import UserContext from "../context/user/UserContext";
 import Toast from "./Toast";
-import axios from "axios";
 import * as Yup from "yup";
 import { Button, Box, TextField } from "@mui/material";
+import UserAction from "../context/user/UserAction";
 
 function Login() {
   const { dispatch } = useContext(UserContext);
-  const API_URL = process.env.REACT_APP_TITLE+"/api/users/";
 
   const formik = useFormik({
     initialValues: {
@@ -23,17 +22,16 @@ function Login() {
     }),
     onSubmit: async (values, { resetForm }) => {
       dispatch({ type: "API_CALL" });
-      await axios
-        .post(API_URL + "login", values)
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-          localStorage.setItem("user", JSON.stringify(response.data));
-          dispatch({ type: "REGISTER_USER", payload: response.data });
-        })
-        .catch((err) => {
-          console.log(err.response.data.message);
-          dispatch({ type: "ERROR", payload: err.response.data });
-        });
+      const getData = async () => {
+        const useData = await UserAction.login(values);
+        if (typeof useData ==='string') {
+          dispatch({ type: "ERROR", payload: {message: useData}});
+        } else {
+          localStorage.setItem("user", JSON.stringify(useData));
+          dispatch({ type: "REGISTER_USER", payload: useData });
+        }
+      };
+      getData();
       resetForm();
     },
   });

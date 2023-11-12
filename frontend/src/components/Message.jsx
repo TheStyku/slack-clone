@@ -3,47 +3,15 @@ import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import Tooltip from "@mui/material/Tooltip";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import ListItemText from "@mui/material/ListItemText";
 import UserContext from "../context/user/UserContext";
-import axios from "axios";
+import { DateTime } from "luxon";
 
 function Message({ socket }) {
-  const { message, token, room, dispatch } = useContext(UserContext);
-  const handleClick = (e) => {
-    socket.emit("join_room", "start");
-  };
-
-  const API_URL = process.env.REACT_APP_TITLE+"/api/message/";
-  const config = {
-    headers: { Authorization: `Bearer ${token}` },
-    params: {
-      room: room,
-    },
-  };
-
-  const handleClick1 = async (e) => {
-    await axios
-      .get(API_URL, config)
-      .then((response) => {
-        console.log(response.data);
-        dispatch({ type: "CLEAR_MESSAGE" });
-        response.data.forEach((item) =>
-          dispatch({
-            type: "ADD_MESSAGE",
-            payload: { id: 1, text: item.text, name: item.user.name,date: new Date() },
-          })
-        );
-      })
-      .catch((err) => {
-        console.log(err.response.data.message);
-      });
-  };
+  const { message, dispatch } = useContext(UserContext);
 
   useEffect(() => {
     socket.off("recive_messege").on("recive_messege", (data) => {
@@ -58,7 +26,7 @@ function Message({ socket }) {
 
   return (
     <Box>
-      <List sx={{ maxHeight: 360, overflow: "auto", minHeight: "21rem", display: 'flex', flexDirection: 'column-reverse'}}>
+      <List sx={{ maxHeight: 360, overflow: "auto", minHeight: "26rem", display: 'flex', flexDirection: 'column-reverse'}}>
         {message.lenght !== 0 ? (
           message
             .map((messag, index) =>
@@ -70,23 +38,12 @@ function Message({ socket }) {
                     "&:hover": { backgroundColor: "#f8f8f8" },
                     paddingBottom: "0px",
                   }}
-                >
-                  <Tooltip
-                    placement="bottom-end"
-                    title={
-                      <Container fixed>
-                        <Paper />
-                        <Button onClick={handleClick}>Add</Button>
-                        <Button onClick={handleClick1}>get</Button>
-                      </Container>
-                    }
-                  >
+                >                
                     <ListItemAvatar sx={{ minWidth: "46px" }}>
                       <Avatar variant="square" sx={{ width: 36, height: 36 }}>
                         H
                       </Avatar>
                     </ListItemAvatar>
-                  </Tooltip>
                   <ListItemText
                     primary={
                       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -97,14 +54,14 @@ function Message({ socket }) {
                         >
                           {messag.user}
                         </Typography>
-                        <Tooltip placement="top" title={messag.date}>
+                        <Tooltip placement="top" title={DateTime.fromISO(messag.date).toFormat('ff') }>
                           <Typography
                             sx={{ display: "inline" }}
                             component="span"
                             variant="body2"
                             ml={1}
                           >
-                           {messag.date}
+                           {DateTime.fromISO(messag.date).toFormat('ff')}
                           </Typography>
                         </Tooltip>
                       </Box>

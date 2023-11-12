@@ -51,7 +51,6 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
-  console.log('jjjj')
 
   // Check for user email
   const user = await User.findOne({ email })
@@ -66,6 +65,18 @@ const loginUser = asyncHandler(async (req, res) => {
   } else {
     res.status(400)
     throw new Error('Invalid credentials')
+  }
+})
+
+const searcUser= asyncHandler(async(req,res)=>{
+  const {name} = req.query
+  console.log(name)
+  const userExists = await User.find({name: new RegExp("^"+name)})
+  if(userExists.length !== 0){
+    res.status(200).json(userExists)
+  } else{
+    res.status(400)
+    throw new Error(`No user exist`)
   }
 })
 
@@ -87,4 +98,5 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  searcUser,
 }

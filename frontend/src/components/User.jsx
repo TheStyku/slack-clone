@@ -6,12 +6,13 @@ import socketIO from "socket.io-client";
 import { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/user/UserContext";
-import { createTheme, ThemeProvider, } from "@mui/material/styles";
-//const socket = socketIO.connect( "https://slackclone-tlow.onrender.com");
-const socket = socketIO.connect( "http://localhost:4000");
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const socket = socketIO.connect( "https://slackclone-tlow.onrender.com");
+//const socket = socketIO.connect("http://localhost:4000");
 
 function User() {
-  const { _id, room} = useContext(UserContext);
+  const { _id, room } = useContext(UserContext);
   const navigate = useNavigate();
   const [log, setLog] = useState(false);
 
@@ -38,30 +39,29 @@ function User() {
   });
 
   useEffect(() => {
-    socket.emit('join_room',room)
+    socket.emit("join_room", room);
     if (_id === "") {
       navigate("/");
     } else {
       setLog(true);
     }
-  }, [navigate, _id,room]);
+  }, [navigate, _id, room]);
 
   return (
     <>
       {log === true ? (
         <>
-        <ThemeProvider theme={theme}>
-        <Navbar />
-          <Grid  container>
-            <Grid item xs={2}>
-              <Room socket={socket}/>
+          <ThemeProvider theme={theme}>
+            <Navbar />
+            <Grid container>
+              <Grid item xs={2}>
+                <Room socket={socket} />
+              </Grid>
+              <Grid item xs={10}>
+                <Chat socket={socket} />
+              </Grid>
             </Grid>
-            <Grid item xs={10}>
-              <Chat socket={socket} />
-            </Grid>
-          </Grid>
-        </ThemeProvider>
-         
+          </ThemeProvider>
         </>
       ) : (
         <></>

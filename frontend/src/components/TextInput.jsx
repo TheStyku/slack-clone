@@ -29,6 +29,7 @@ import CodeOffIcon from "@mui/icons-material/CodeOff";
 import UserContext from "../context/user/UserContext";
 import { useState, useContext } from "react";
 import axios from "axios";
+import { DateTime } from "luxon";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   "& .MuiToggleButtonGroup-grouped": {
@@ -52,7 +53,7 @@ function TextInput({ socket }) {
   const [message, setMessage] = useState("");
   const { room, token, _id, name } = useContext(UserContext);
 
-  const API_URL = process.env.REACT_APP_TITLE+"/api/message/";
+  const API_URL = process.env.REACT_APP_TITLE + "/api/message/";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -77,7 +78,7 @@ function TextInput({ socket }) {
           room: room,
           text: message,
           ID: _id,
-          date: new Date(),
+          date: DateTime.now().toString(),
         },
         config
       )
@@ -91,7 +92,7 @@ function TextInput({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message, room: room, name: name,date: new Date()});
+    socket.emit("send_message", { message: message, room: room, name: name, date: DateTime.now().toString() });
     sendMessage();
     setMessage("");
   };
@@ -170,9 +171,9 @@ function TextInput({ socket }) {
           <Grid item>
             <InputBase
               sx={{ px: 1, flex: 1 }}
-              placeholder="Search Google Maps"
+              placeholder="New message"
               size="medium"
-              inputProps={{ "aria-label": "search google maps" }}
+              onSubmit={handleSubmit}
               onChange={handleChange}
               fullWidth
               name="message"
