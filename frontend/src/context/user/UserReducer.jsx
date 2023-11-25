@@ -53,6 +53,9 @@ const userReducer = (state, { type, payload }) => {
       return {
         ...state,
         user: null,
+        message:"",
+        name:"",
+        room: "",
         _id: "",
         token: "",
         email: "",
@@ -104,7 +107,26 @@ const userReducer = (state, { type, payload }) => {
         ...state,
         activeRooms: [...state.activeRooms, payload.activeRooms],
       };
-
+     case "DELETE_ACTIVE_ROOM":
+      return{
+        ...state,
+        activeRooms: state.activeRooms.filter(t=>t !==payload.room),
+      } 
+      case "SET_ACTIVE_ROOM":
+        return{
+          ...state,
+          activeRooms: payload.activeRooms
+        }
+        case "SET_ROOM_LIST":
+          return{
+            ...state,
+            roomsList: payload.roomsList
+          }
+          case "ADD_ROOM_LIST":
+            return{
+              ...state,
+              roomsList: [...state.roomsList, payload.roomsList]
+            }
     default:
       return state;
   }

@@ -22,7 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
 import UserContext from "../context/user/UserContext";
-import { useState, useContext,Fragment } from "react";
+import { useState, useContext, Fragment } from "react";
 import axios from "axios";
 import { ListItem } from "@mui/material";
 
@@ -36,14 +36,17 @@ function RoomList({ socket }) {
   const [room, setRoom] = useState("");
   const [description, setDescription] = useState("");
   const [password, setPasword] = useState("");
-  const { dispatch, token, activeRooms, email } = useContext(UserContext);
+  const { dispatch, token, activeRooms, email, roomsList, _id } =
+    useContext(UserContext);
   const [chan, setChan] = useState(["general"]);
   const [name, setName] = useState("");
   const [users, setUsers] = useState([]);
+  const [temp, setTemp] = useState();
 
   const API_URL = process.env.REACT_APP_TITLE + "/api/message/";
   const API_URL2 = process.env.REACT_APP_TITLE + "/api/room/";
   const API_URL3 = process.env.REACT_APP_TITLE + "/api/users/search";
+  const API_URL_UPDATE = process.env.REACT_APP_TITLE + "/api/users/update";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -57,7 +60,6 @@ function RoomList({ socket }) {
         },
       })
       .then((response) => {
-        console.log(response.data);
         dispatch({ type: "CLEAR_MESSAGE" });
         response.data.forEach((item) =>
           dispatch({
@@ -76,6 +78,14 @@ function RoomList({ socket }) {
       });
   };
 
+  const updateActiveRooms = async (n) => {
+    await axios
+      .patch(API_URL_UPDATE, { _id: _id, activeRooms: n })
+      .then((response) => {
+        console.log(response.data);
+      });
+  };
+
   const searchUser = async (e) => {
     await axios
       .get(API_URL3, {
@@ -85,7 +95,6 @@ function RoomList({ socket }) {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setUsers([]);
         setErrorOpen(false);
         response.data.forEach((item) => {
@@ -121,10 +130,16 @@ function RoomList({ socket }) {
         config
       )
       .then((response) => {
-        console.log(response.data);
         dispatch({ type: "SET_ROOM", payload: { room } });
-        console.log({ room });
         setChan([...chan, room]);
+        dispatch({ type: "ADD_ROOM_LIST", payload: { roomsList: room } });
+        if (!activeRooms.includes(room)) {
+          dispatch({ type: "AddActiveRooms", payload: { activeRooms: room } });
+          setTemp(activeRooms);
+          const filtered = temp.filter((t) => t !== name);
+          setTemp(filtered);
+          updateActiveRooms(temp);
+        }
         setOpenAddChannels(false);
         getMessage(room);
         setRoom("");
@@ -165,6 +180,7 @@ function RoomList({ socket }) {
     getMessage(name);
     if (!activeRooms.includes(name)) {
       dispatch({ type: "AddActiveRooms", payload: { activeRooms: name } });
+      updateActiveRooms(name);
     }
   };
 
@@ -209,17 +225,17 @@ function RoomList({ socket }) {
             dense
             sx={{ maxHeight: "20rem", overflow: "auto" }}
           >
-            {chan.map((cha, index) => (
+            {roomsList.map((cha, index) => (
               <ListItem key={index}>
                 <ListItemButton
-                  onClick={() => channelClick(chan[index])}
+                  onClick={(e) => channelClick(roomsList[index])}
                   sx={{ pl: 4 }}
                 >
                   <ListItemIcon sx={{ minWidth: "0px", marginRight: "0.5rem" }}>
                     <TagIcon color="grey" />
                   </ListItemIcon>
                   <ListItemText
-                    primary={chan[index]}
+                    primary={roomsList[index]}
                     primaryTypographyProps={{
                       fontSize: 15,
                       fontWeight: "medium",
@@ -347,7 +363,6 @@ function RoomList({ socket }) {
             Create
           </Button>
         </DialogActions>
-       
       </Dialog>
       <Dialog
         scroll="paper"
@@ -357,7 +372,7 @@ function RoomList({ socket }) {
         fullWidth={true}
       >
         <DialogTitle>Search User</DialogTitle>
-        <DialogContent sx={{overflow:'unset'}}>
+        <DialogContent sx={{ overflow: "unset" }}>
           <TextField
             autoFocus
             margin="dense"

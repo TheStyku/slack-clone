@@ -1,14 +1,17 @@
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import TagIcon from "@mui/icons-material/Tag";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import Chip from "@mui/material/Chip";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Divider from "@mui/material/Divider";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import TextInput from "./TextInput";
 import Message from "./Message";
 import Avatar from "@mui/material/Avatar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import UserContext from "../context/user/UserContext";
 import axios from "axios";
 
@@ -33,9 +36,14 @@ function Chat({ socket }) {
       },
     },
   });
-  const { activeRooms, token, room, dispatch } = useContext(UserContext);
+  const { activeRooms, token, room, email, dispatch, _id } =
+    useContext(UserContext);
 
-  const API_URL =  process.env.REACT_APP_TITLE+"/api/message/";
+    const [temp, setTemp] = useState()
+
+  const API_URL = process.env.REACT_APP_TITLE + "/api/message/";
+  const API_URL_USER = process.env.REACT_APP_TITLE + "/api/users/me";
+  const API_URL_UPDATE = process.env.REACT_APP_TITLE + "/api/users/update/delete";
   const config = {
     headers: { Authorization: `Bearer ${token}` },
     params: {
@@ -43,17 +51,50 @@ function Chat({ socket }) {
     },
   };
 
-  const handleClick1 = async (e) => {
+  const updateActiveRooms = async (t) => {
+    await axios
+      .patch(API_URL_UPDATE, { _id: _id, activeRooms: t })
+      .then((response) => {console.log(response.data)});
+  };
 
+  const handleStart = async () => {
+    await axios
+      .get(API_URL_USER, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          email: email,
+        },
+      })
+      .then((response) => {
+        dispatch({
+          type: "SET_ACTIVE_ROOM",
+          payload: { activeRooms: response.data.activeRooms },
+        });
+        dispatch({
+          type: "SET_ROOM_LIST",
+          payload: { roomsList: response.data.rooms },
+        });
+        setTemp(response.data.rooms)
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
+
+  const handleClick1 = async () => {
     await axios
       .get(API_URL, config)
       .then((response) => {
-        console.log(response.data);
         dispatch({ type: "CLEAR_MESSAGE" });
         response.data.forEach((item) =>
           dispatch({
             type: "ADD_MESSAGE",
-            payload: { id: 1, text: item.text, name: item.user.name, date: item.date },
+            payload: {
+              id: 1,
+              text: item.text,
+              name: item.user.name,
+              date: item.date,
+            },
           })
         );
       })
@@ -70,31 +111,40 @@ function Chat({ socket }) {
         },
       })
       .then((response) => {
-        console.log(response.data);
         dispatch({ type: "CLEAR_MESSAGE" });
         response.data.forEach((item) =>
           dispatch({
             type: "ADD_MESSAGE",
-            payload: { id: item._id, text: item.text, name: item.user.name, date: item.date },
+            payload: {
+              id: item._id,
+              text: item.text,
+              name: item.user.name,
+              date: item.date,
+            },
           })
         );
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.log(err.response.data.message);
       });
   };
 
   const handleClick = (rooms) => {
-    console.log(rooms);
     dispatch({ type: "SET_ROOM", payload: { room: rooms } });
     getMessage(rooms);
+  };
+
+  const handleDelete = (rooms) => {
+    dispatch({ type: "DELETE_ACTIVE_ROOM", payload: { room: rooms } });
+    updateActiveRooms(rooms)
   };
 
   useEffect(() => {
     if (!ifInit) {
       handleClick1();
-       // eslint-disable-next-line
+      handleStart();
+      // eslint-disable-next-line
       ifInit = true;
-      
     }
   }, []);
 
@@ -103,7 +153,9 @@ function Chat({ socket }) {
       <ThemeProvider theme={theme}>
         <Grid sx={{ flexGrow: 1 }} rowSpacing={1} container mt={0.05}>
           <Grid item xs={10} px={2} mb={1}>
-            {activeRooms.map((rooms, index) => (
+            <Stack direction="row" spacing={1}>
+              {activeRooms.map((rooms, index) => (
+                /*
               <Button
                 key={index}
                 onClick={(e) => handleClick(rooms)}
@@ -113,7 +165,17 @@ function Chat({ socket }) {
               >
                 <TagIcon /> {rooms} <ArrowDropDownIcon />
               </Button>
-            ))}
+              */
+                <Chip
+                  key={index}
+                  label={rooms}
+                  onClick={(e) => handleClick(rooms)}
+                  onDelete={(e) => handleDelete(rooms)}
+                  deleteIcon={<DeleteIcon />}
+                  variant="outlined"
+                />
+              ))}
+            </Stack>
           </Grid>
           <Grid
             item

@@ -16,8 +16,9 @@ export const UserProvider = ({ children }) => {
     error: false,
     errorMessage: "",
     room: "start",
+    roomsList:[],
     message: [],
-    activeRooms: ['general','bbbb','tak'],
+    activeRooms: [],
   };
   const [state, dispatch] = useReducer(userReducer, initialState);
 

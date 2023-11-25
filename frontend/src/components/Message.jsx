@@ -19,7 +19,6 @@ function Message({ socket }) {
         type: "ADD_MESSAGE",
         payload: { id: 1, text: data.message, name: data.name, date: data.date },
       });
-      console.log("i fire once");
       console.log(data);
     });
   }, [socket, dispatch]);

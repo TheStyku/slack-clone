@@ -17,7 +17,10 @@ const userSchema = mongoose.Schema(
     },
     rooms:{
       type: Array,
-    }
+    },
+    activeRooms:{
+      type: Array,
+    }, 
   },
   {
     timestamps: true,

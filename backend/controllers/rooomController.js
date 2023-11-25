@@ -8,7 +8,7 @@ const Room = require("../models/roomModel");
 const cheeckRooms = asyncHandler(async (req, res) => {
 
   const room = req.query.room
-  const rooom = await Room.find({ name: new RegExp("^"+room) });
+  const rooom = await Room.find({ name: new RegExp(`^${room}`, 'i' ) });
   console.log(room)
   if (rooom.length === 0) {
     res.status(400)
@@ -31,11 +31,13 @@ const createRoom = asyncHandler(async (req, res) => {
     throw new Error(`Room ${roomExist.name} alredy exist`);
   }
 
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
 
   const room = await Room.create({
     name,
     description,
-    password,
+    password:hashedPassword,
   });
 
   if (room) {
@@ -49,8 +51,23 @@ const createRoom = asyncHandler(async (req, res) => {
   }
 });
 
+const loginRoom = asyncHandler(async(req,res)=>{
+  const {name,password} = req.body
+  const room = await Room.findOne({name})
+  if(room &&(await bcrypt.compare(password, room.password))) {
+    res.json({
+      name: room.name
+    })
+  }else{
+    res.status(400)
+    throw new Error('Wrong password')
+    
+  }
+})
+
 module.exports = {
   cheeckRooms,
   getRooms,
   createRoom,
+  loginRoom,
 };

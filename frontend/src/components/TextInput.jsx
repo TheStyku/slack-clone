@@ -8,6 +8,7 @@ import {
   ToggleButtonGroup,
   ButtonGroup,
   Grid,
+  Box,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
@@ -92,7 +93,12 @@ function TextInput({ socket }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("send_message", { message: message, room: room, name: name, date: DateTime.now().toString() });
+    socket.emit("send_message", {
+      message: message,
+      room: room,
+      name: name,
+      date: DateTime.now().toString(),
+    });
     sendMessage();
     setMessage("");
   };
@@ -169,16 +175,18 @@ function TextInput({ socket }) {
             </StyledToggleButtonGroup>
           </Grid>
           <Grid item>
-            <InputBase
-              sx={{ px: 1, flex: 1 }}
-              placeholder="New message"
-              size="medium"
-              onSubmit={handleSubmit}
-              onChange={handleChange}
-              fullWidth
-              name="message"
-              value={message}
-            />
+            <Box component="form" onSubmit={handleSubmit}>
+              <InputBase
+                sx={{ px: 1, flex: 1 }}
+                placeholder="New message"
+                size="medium"
+                onSubmit={() => handleSubmit()}
+                onChange={handleChange}
+                fullWidth
+                name="message"
+                value={message}
+              />
+            </Box>
           </Grid>
           <Grid
             item

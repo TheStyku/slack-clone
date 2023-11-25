@@ -31,6 +31,8 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password: hashedPassword,
+    rooms: ['general'],
+    activeRooms:['general']
   })
 
   if (user) {
@@ -39,6 +41,8 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
+      rooms: user.rooms,
+      activeRooms: user.activeRooms
     })
   } else {
     res.status(400)
@@ -61,6 +65,8 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
+      rooms: user.rooms,
+      activeRooms: user.activeRooms
     })
   } else {
     res.status(400)
@@ -71,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const searcUser= asyncHandler(async(req,res)=>{
   const {name} = req.query
   console.log(name)
-  const userExists = await User.find({name: new RegExp("^"+name)})
+  const userExists = await User.find({name: new RegExp(`^${name}`, 'i' )})
   if(userExists.length !== 0){
     res.status(200).json(userExists)
   } else{
@@ -84,7 +90,37 @@ const searcUser= asyncHandler(async(req,res)=>{
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user)
+  const {email} = req.query
+  const user = await User.findOne({email})
+  res.status(200).json({
+    _id: user.id,
+      name: user.name,
+      email: user.email,
+      rooms: user.rooms,
+      activeRooms: user.activeRooms
+  })
+})
+
+const updateActiveRooms = asyncHandler(async(req,res)=>{
+  console.log(`value=${req.body.activeRooms}`)
+  const user = await User.findById(req.body._id)
+  user.activeRooms.push(req.body.activeRooms)
+  await user.save()
+})
+
+const updateActiveRoomsDelete = asyncHandler(async(req,res)=>{
+  console.log(`value=${req.body.activeRooms}`)
+  const user = await User.findById(req.body._id)
+  let temp = user.activeRooms.filter( arg => arg!==req.body.activeRooms)
+  user.activeRooms = temp
+  await user.save()
+})
+
+const updateRoom = asyncHandler (async(req,res)=>{
+  console.log(`value=${req.body.rooms}`)
+  const user = await User.findById(req.body._id)
+  user.rooms.push(req.body.rooms)
+  await user.save()
 })
 
 // Generate JWT
@@ -99,4 +135,7 @@ module.exports = {
   loginUser,
   getMe,
   searcUser,
+  updateActiveRooms,
+  updateActiveRoomsDelete,
+  updateRoom
 }
